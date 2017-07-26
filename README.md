@@ -1,11 +1,11 @@
-###写在前面的话
+### 写在前面的话
 
 这篇文章的通过runtime实现字典转模型是参考(抄袭)[iOS 模式详解—「runtime面试、工作」看我就 🐒 了 ^_^.](http://www.jianshu.com/p/19f280afcb24)中runtime 字典转模型，并且在此基础上做了以下扩展：
 
 1. 添加：属性名映射到字典中对应的key的方法，如id -> ID;
 2. 修复：当模型中的数组中不全是某一个模型的时候，会引起崩溃的问题。如数组中有8个元素，其中7个是模型，还有一个是字符串；
 
-###[Github 传送门](https://github.com/JixinZhang/ZRuntimeDictToModel)
+### [Github 传送门](https://github.com/JixinZhang/ZRuntimeDictToModel)
 
 
 **需要考虑一下三种情况** 
@@ -16,14 +16,14 @@ _点击可直接跳往对应小结_
 * [模型中嵌套模型（模型的属性是另外一个模型对象）；](#3)
 * [模型中的数组中装着模型（数组中的元素是一个模型）。](#4)
 
-##一、使用runtime将字典转成模型
+## 一、使用runtime将字典转成模型
 
-###1. 思路
+### 1. 思路
 >使用runtime遍历出模型中的所有属性，根据模型中属性,去字典中取出对应的value给模型属性赋值
 
-###2. 代码
+### 2. 代码
 
-####1) 定义一个Student的模型，其属性如下：
+#### 1) 定义一个Student的模型，其属性如下：
 
 Student.h文件
 
@@ -48,7 +48,7 @@ Student.m文件
 @end
 ```
 
-####2)对NSObject扩展一个分类NSObject+DictionaryToModel
+#### 2)对NSObject扩展一个分类NSObject+DictionaryToModel
 
 NSObject+DictionaryToModel.h文件
 
@@ -107,7 +107,7 @@ NSObject+DictionaryToModel.m文件，**一定要导入<objc/message.h>**
 @end
 ```
 
-####3)调用`+ (instancetype)modelWithDict:(NSDictionary *)dict`
+#### 3)调用`+ (instancetype)modelWithDict:(NSDictionary *)dict`
 
 ```
 
@@ -125,7 +125,7 @@ NSLog(@"student = %@", student);
 
 ```
 
-####4)模型的转换结果
+#### 4)模型的转换结果
 
 ![image1.png](http://upload-images.jianshu.io/upload_images/2409226-a75993f7eefe7d74.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
@@ -135,15 +135,15 @@ NSLog(@"student = %@", student);
 * 对于这种模型属性名和数据中key不对应的问题，接下来会讲如何解决。
 
 <h3 id="2"></h3>
-##二、当字典中的key和模型的属性匹配不上
+## 二、当字典中的key和模型的属性匹配不上
 
-###1. 思路
+### 1. 思路
 >如果字典中的key和模型的属性匹配不上，可以做一个映射。将属性名映射到字典中对应的key上
 
-###2. 代码
+### 2. 代码
 这里代码接着上面的代码使用
 
-####1）在NSObject的分类NSObject+DictionaryToModel中添加映射方法
+#### 1）在NSObject的分类NSObject+DictionaryToModel中添加映射方法
 
 NSObject+DictionaryToModel.h文件中
 
@@ -216,7 +216,7 @@ NSObject+DictionaryToModel.m文件中
 
 ```
 
-####2）在模型中实现映射方法
+#### 2）在模型中实现映射方法
 
 ```
 //重写NSObject+DictionaryToModel分类中的映射方法
@@ -226,20 +226,20 @@ NSObject+DictionaryToModel.m文件中
 
 ```
 
-####3）模型转换的结果如下
+#### 3）模型转换的结果如下
 
 ![image2.png](http://upload-images.jianshu.io/upload_images/2409226-96df3e26ae31ceaf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 <h3 id="3"></h3>
-##三、模型中嵌套模型
+## 三、模型中嵌套模型
 
-###1. 思路
+### 1. 思路
 >模型中嵌套模型就是字典中嵌套字典，当给模型的模型赋值的时候，再调用一次字典转模型就可以了。其实就是递归调用
 
 
-###2. 代码
+### 2. 代码
 
-####1) 定义一个ZClass模型，其属性具体如下：
+#### 1) 定义一个ZClass模型，其属性具体如下：
 
 ZClass.h文件中，包含了Student模型。
 
@@ -270,7 +270,7 @@ ZClass.m文件中
 
 ```
 
-####2) 在NSObject的分类NSObject+DictionaryToModel中
+#### 2) 在NSObject的分类NSObject+DictionaryToModel中
 完善一下`+ (instancetype)modelWithDict:(NSDictionary *)dict`方法，这里我写在`+ (instancetype)modelWithDict2:(NSDictionary *)dict`中。
 
 NSObject+DictionaryToModel.h文件
@@ -330,7 +330,7 @@ NSObject+DictionaryToModel.m文件，**一定要导入<objc/message.h>**
 
 ```
 
-####3）调用`+ (instancetype)modelWithDict2:(NSDictionary *)dict`
+#### 3）调用`+ (instancetype)modelWithDict2:(NSDictionary *)dict`
 
 ```
 NSDictionary *classInfo = @{@"student" : studentInfo,
@@ -342,20 +342,20 @@ ZClass *class1 = [ZClass modelWithDict2:classInfo];
 NSLog(@"maxModel = %@",class1);
 ```
 
-####4）模型转换的结果如下
+#### 4）模型转换的结果如下
 
 ![image3.png](http://upload-images.jianshu.io/upload_images/2409226-af32a1cd93ed3976.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 <h3 id="4"></h3>
-##四、模型中的数组中装着模型
+## 四、模型中的数组中装着模型
 
-###1. 思路
+### 1. 思路
 >数组中装着模型，就是数组中的元素是一个字典。而这个字典对应着一个模型。在for循环数组的时候得到一个个字典，但是却不知道这个字典对应的模型是什么，所以需要告诉赋值的地方，数组中装的到底是什么模型，即模型的名称。
 
-###2. 代码
+### 2. 代码
 这里代码接着上面第三节的代码使用
 
-####1）在NSObject的分类NSObject+DictionaryToModel中添加 数组中包含模型名称的方法
+#### 1）在NSObject的分类NSObject+DictionaryToModel中添加 数组中包含模型名称的方法
 
 在NSObject+DictionaryToModel.h文件中
 
@@ -444,7 +444,7 @@ NSLog(@"maxModel = %@",class1);
 
 ```
 
-####2) 定义一个ZClass模型，其属性具体如下：
+#### 2) 定义一个ZClass模型，其属性具体如下：
 
 ZClass.h文件中，包含了Student模型。
 
@@ -481,7 +481,7 @@ ZClass.m文件中
 
 ```
 
-####3）调用`+ (instancetype)modelWithDict2:(NSDictionary *)dict`
+#### 3）调用`+ (instancetype)modelWithDict2:(NSDictionary *)dict`
 
 ```
 NSDictionary *classInfo = @{@"student" : studentInfo,
@@ -495,8 +495,8 @@ NSDictionary *classInfo = @{@"student" : studentInfo,
         NSLog(@"maxModel = %@",class1);
 ```
 
-####4）模型转换的结果如下
+#### 4）模型转换的结果如下
 
 ![image4.png](http://upload-images.jianshu.io/upload_images/2409226-695d6fb3834d3079.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-###[Github 传送门](https://github.com/JixinZhang/ZRuntimeDictToModel)
+### [Github 传送门](https://github.com/JixinZhang/ZRuntimeDictToModel)
