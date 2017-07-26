@@ -135,6 +135,7 @@ NSLog(@"student = %@", student);
 * 对于这种模型属性名和数据中key不对应的问题，接下来会讲如何解决。
 
 <h3 id="2"></h3>
+
 ## 二、当字典中的key和模型的属性匹配不上
 
 ### 1. 思路
@@ -231,6 +232,7 @@ NSObject+DictionaryToModel.m文件中
 ![image2.png](http://upload-images.jianshu.io/upload_images/2409226-96df3e26ae31ceaf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 <h3 id="3"></h3>
+
 ## 三、模型中嵌套模型
 
 ### 1. 思路
@@ -347,6 +349,7 @@ NSLog(@"maxModel = %@",class1);
 ![image3.png](http://upload-images.jianshu.io/upload_images/2409226-af32a1cd93ed3976.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 <h3 id="4"></h3>
+
 ## 四、模型中的数组中装着模型
 
 ### 1. 思路
